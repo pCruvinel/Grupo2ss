@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { FileText, User, DollarSign, Calendar, Package } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatarCPFouCNPJ, formatarTelefone, validarCPF, validarCNPJ, validarEmail } from '../../lib/formatters';
 
 interface NovoContratoModalProps {
   open: boolean;
@@ -128,26 +129,6 @@ export function NovoContratoModal({ open, onClose, onSave, empresa_id }: NovoCon
     onSave(contratoData);
   };
 
-  const formatCPFCNPJ = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 11) {
-      // CPF: 000.000.000-00
-      return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    } else {
-      // CNPJ: 00.000.000/0000-00
-      return numbers.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
-    }
-  };
-
-  const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, '');
-    if (numbers.length <= 10) {
-      return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
-    } else {
-      return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -196,7 +177,7 @@ export function NovoContratoModal({ open, onClose, onSave, empresa_id }: NovoCon
                   id="cliente_cpf_cnpj"
                   value={formData.cliente_cpf_cnpj}
                   onChange={(e) => {
-                    const formatted = formatCPFCNPJ(e.target.value);
+                    const formatted = formatarCPFouCNPJ(e.target.value);
                     setFormData({ ...formData, cliente_cpf_cnpj: formatted });
                   }}
                   placeholder="000.000.000-00"
@@ -210,7 +191,7 @@ export function NovoContratoModal({ open, onClose, onSave, empresa_id }: NovoCon
                   id="cliente_telefone"
                   value={formData.cliente_telefone}
                   onChange={(e) => {
-                    const formatted = formatPhone(e.target.value);
+                    const formatted = formatarTelefone(e.target.value);
                     setFormData({ ...formData, cliente_telefone: formatted });
                   }}
                   placeholder="(00) 00000-0000"

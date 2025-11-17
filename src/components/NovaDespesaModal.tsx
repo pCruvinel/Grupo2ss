@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Plus, Wallet, TrendingUp, AlertCircle, FileText, Building2 } from 'lucide-react';
+import { Plus, Receipt, DollarSign, Calendar, Building2, FileText, TrendingUp, AlertCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { Card } from './ui/card';
+import { formatarMoeda, formatarPorcentagem } from '../lib/formatters';
 
 interface NovaDespesaModalProps {
   open: boolean;
@@ -152,7 +153,7 @@ export function NovaDespesaModal({ open, onClose, empresas, onSave }: NovaDespes
       <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b">
           <DialogTitle className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-[#1F4788]" />
+            <Receipt className="w-5 h-5 text-[#1F4788]" />
             Nova Despesa
           </DialogTitle>
           <DialogDescription>
@@ -359,12 +360,12 @@ export function NovaDespesaModal({ open, onClose, empresas, onSave }: NovaDespes
                               </div>
                             ) : (
                               <Badge variant="outline" className="text-xs">
-                                {percentual.toFixed(2)}%
+                                {formatarPorcentagem(percentual)}
                               </Badge>
                             )}
                             
                             <div className="text-right min-w-[100px]">
-                              <p className="text-sm text-gray-900">R$ {valor.toFixed(2)}</p>
+                              <p className="text-sm text-gray-900">{formatarMoeda(valor)}</p>
                             </div>
                           </div>
                         );
@@ -378,7 +379,7 @@ export function NovaDespesaModal({ open, onClose, empresas, onSave }: NovaDespes
                         <p className="text-xs text-gray-500">{somaPercentuais.toFixed(2)}% de {empresasSelecionadas.length} empresas</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg text-gray-900">R$ {valorTotal.toFixed(2)}</p>
+                        <p className="text-lg text-gray-900">{formatarMoeda(valorTotal)}</p>
                       </div>
                     </div>
 

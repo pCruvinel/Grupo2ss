@@ -6,10 +6,11 @@ import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import { Badge } from './ui/badge';
 import { Checkbox } from './ui/checkbox';
 import { Card } from './ui/card';
+import { formatarCPF, formatarTelefone, validarCPF, validarEmail } from '../lib/formatters';
 
 interface NovoColaboradorModalProps {
   open: boolean;
@@ -80,29 +81,12 @@ export function NovoColaboradorModal({ open, onClose, empresas, onSave }: NovoCo
     return (salarioTotal * percentual) / 100;
   };
 
-  const formatCPF = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-      .replace(/(-\d{2})\d+?$/, '$1');
-  };
-
-  const formatPhone = (value: string) => {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{5})(\d)/, '$1-$2')
-      .replace(/(-\d{4})\d+?$/, '$1');
-  };
-
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.nome.trim()) newErrors.nome = 'Nome é obrigatório';
-    if (!formData.cpf || formData.cpf.length < 14) newErrors.cpf = 'CPF inválido';
-    if (!formData.email.trim() || !formData.email.includes('@')) {
+    if (!formData.cpf || !validarCPF(formData.cpf)) newErrors.cpf = 'CPF inválido';
+    if (!formData.email.trim() || !validarEmail(formData.email)) {
       newErrors.email = 'Email inválido';
     }
     if (!formData.telefone || formData.telefone.length < 14) {
@@ -188,6 +172,52 @@ export function NovoColaboradorModal({ open, onClose, empresas, onSave }: NovoCo
   const somaPercentuais = Object.values(rateioPersonalizado).reduce((acc, val) => acc + val, 0);
   const salarioTotal = parseFloat(formData.salario_total) || 0;
 
+  // Componente auxiliar para item de rateio
+  const EmpresaRateioItem = ({ 
+    empId, 
+    empresa, 
+    percentual, 
+    salario, 
+    tipoRateio, 
+    onRateioChange 
+  }: {
+    empId: string;
+    empresa: { id: string; nome: string } | undefined;
+    percentual: number;
+    salario: number;
+    tipoRateio: 'igual' | 'personalizado';
+    onRateioChange: (empresaId: string, valor: number) => void;
+  }) => (
+    <div className="flex items-center gap-3 p-2 bg-white rounded border border-orange-200">
+      <div className="flex-1">
+        <p className="text-sm text-gray-900">{empresa?.nome}</p>
+      </div>
+      
+      {tipoRateio === 'personalizado' ? (
+        <div className="flex items-center gap-2">
+          <Input
+            type="number"
+            step="0.01"
+            min="0"
+            max="100"
+            value={percentual}
+            onChange={(e) => onRateioChange(empId, parseFloat(e.target.value) || 0)}
+            className="w-20 h-8"
+          />
+          <span className="text-sm text-gray-600">%</span>
+        </div>
+      ) : (
+        <Badge variant="outline" className="text-xs">
+          {percentual.toFixed(2)}%
+        </Badge>
+      )}
+      
+      <div className="text-right min-w-[100px]">
+        <p className="text-sm text-gray-900">R$ {salario.toFixed(2)}</p>
+      </div>
+    </div>
+  );
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-5xl max-h-[90vh] p-0 gap-0">
@@ -249,7 +279,7 @@ export function NovoColaboradorModal({ open, onClose, empresas, onSave }: NovoCo
                   <Input
                     id="cpf"
                     value={formData.cpf}
-                    onChange={(e) => setFormData({ ...formData, cpf: formatCPF(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, cpf: formatarCPF(e.target.value) })}
                     placeholder="000.000.000-00"
                     maxLength={14}
                     className={errors.cpf ? 'border-red-500' : ''}
@@ -262,7 +292,7 @@ export function NovoColaboradorModal({ open, onClose, empresas, onSave }: NovoCo
                   <Input
                     id="telefone"
                     value={formData.telefone}
-                    onChange={(e) => setFormData({ ...formData, telefone: formatPhone(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, telefone: formatarTelefone(e.target.value) })}
                     placeholder="(00) 00000-0000"
                     maxLength={15}
                     className={errors.telefone ? 'border-red-500' : ''}
@@ -459,34 +489,15 @@ export function NovoColaboradorModal({ open, onClose, empresas, onSave }: NovoCo
                         const salario = calcularSalarioPorEmpresa(empId);
 
                         return (
-                          <div key={empId} className="flex items-center gap-3 p-2 bg-white rounded border border-orange-200">
-                            <div className="flex-1">
-                              <p className="text-sm text-gray-900">{empresa?.nome}</p>
-                            </div>
-                            
-                            {tipoRateio === 'personalizado' ? (
-                              <div className="flex items-center gap-2">
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  min="0"
-                                  max="100"
-                                  value={percentual}
-                                  onChange={(e) => handleRateioPersonalizadoChange(empId, parseFloat(e.target.value) || 0)}
-                                  className="w-20 h-8"
-                                />
-                                <span className="text-sm text-gray-600">%</span>
-                              </div>
-                            ) : (
-                              <Badge variant="outline" className="text-xs">
-                                {percentual.toFixed(2)}%
-                              </Badge>
-                            )}
-                            
-                            <div className="text-right min-w-[100px]">
-                              <p className="text-sm text-gray-900">R$ {salario.toFixed(2)}</p>
-                            </div>
-                          </div>
+                          <EmpresaRateioItem
+                            key={empId}
+                            empId={empId}
+                            empresa={empresa}
+                            percentual={percentual}
+                            salario={salario}
+                            tipoRateio={tipoRateio}
+                            onRateioChange={handleRateioPersonalizadoChange}
+                          />
                         );
                       })}
                     </div>

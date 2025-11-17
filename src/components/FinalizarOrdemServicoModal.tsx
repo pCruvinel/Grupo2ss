@@ -1,12 +1,12 @@
-import { CheckCircle, Package, Unlock, AlertTriangle } from 'lucide-react';
-import { TwoColumnModal } from './TwoColumnModal';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Alert, AlertDescription } from './ui/alert';
-import { Textarea } from './ui/textarea';
+import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { toast } from './ui/sonner';
+import { Textarea } from './ui/textarea';
+import { Alert, AlertDescription } from './ui/alert';
+import { toast } from 'sonner';
 import { useState } from 'react';
+import { CheckCircle2, Unlock, Package } from 'lucide-react';
 
 interface MaterialVinculado {
   material_id: string;
@@ -168,7 +168,7 @@ export function FinalizarOrdemServicoModal({
           Cancelar
         </Button>
         <Button onClick={handleFinalizar} className="bg-green-600 hover:bg-green-700">
-          <CheckCircle className="w-4 h-4 mr-2" />
+          <CheckCircle2 className="w-4 h-4 mr-2" />
           Confirmar Finalização
         </Button>
       </div>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Upload, File, X, Check, AlertTriangle } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 import { Alert, AlertDescription } from './ui/alert';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
+import { Upload, File, X, Check } from 'lucide-react';
 
 interface Comprovante {
   id: string;

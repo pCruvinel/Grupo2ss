@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Plus, FileText, User, FileCheck, DollarSign } from 'lucide-react';
+import { Plus, FileText, DollarSign, Calendar } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 
 interface NovoContratoModalProps {
   open: boolean;

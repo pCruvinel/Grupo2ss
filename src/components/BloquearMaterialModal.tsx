@@ -1,12 +1,12 @@
-import { Lock, Unlock, AlertTriangle } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Alert, AlertDescription } from './ui/alert';
-import { Textarea } from './ui/textarea';
+import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { toast } from './ui/sonner';
+import { Textarea } from './ui/textarea';
+import { Alert, AlertDescription } from './ui/alert';
+import { toast } from 'sonner';
 import { useState } from 'react';
+import { Lock, AlertTriangle } from 'lucide-react';
 
 interface Material {
   id: string;
@@ -72,7 +72,7 @@ export function BloquearMaterialModal({
               </>
             ) : (
               <>
-                <Unlock className="w-5 h-5 text-green-600" />
+                <Lock className="w-5 h-5 text-green-600" />
                 Desbloquear Material
               </>
             )}
@@ -148,7 +148,7 @@ export function BloquearMaterialModal({
             </Alert>
           ) : (
             <Alert>
-              <Unlock className="w-4 h-4" />
+              <Lock className="w-4 h-4" />
               <AlertDescription>
                 <strong>RN-006: Desbloqueio de Material</strong>
                 <br />
@@ -185,7 +185,7 @@ export function BloquearMaterialModal({
               </>
             ) : (
               <>
-                <Unlock className="w-4 h-4 mr-2" />
+                <Lock className="w-4 h-4 mr-2" />
                 Desbloquear Material
               </>
             )}

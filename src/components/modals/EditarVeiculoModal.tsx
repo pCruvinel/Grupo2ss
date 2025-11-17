@@ -5,7 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { toast } from '../ui/sonner';
+import { toast } from 'sonner';
 import { Car, FileText, Wrench, AlertCircle } from 'lucide-react';
 import { Badge } from '../ui/badge';
 

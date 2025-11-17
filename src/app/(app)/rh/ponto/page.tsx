@@ -7,42 +7,14 @@
  * ╚═══════════════════════════════════════════════════════════════╝
  */
 
-import { useState, useEffect, useMemo } from 'react';
-import {
-  Plus,
-  Clock,
-  MapPin,
-  List,
-  Grid,
-  Download,
-  Eye,
-  Edit,
-  Check,
-  X,
-  Calendar,
-  TrendingUp,
-  TrendingDown,
-  AlertCircle,
-  Users,
-  CheckCircle,
-  XCircle,
-  User,
-  Building2,
-  RefreshCw,
-} from 'lucide-react';
-import { 
-  createClient, 
-  useEmpresa, 
-  LoadingSpinner, 
-  EmptyState,
-  formatDate 
-} from '../../../lib/figma-make-helpers';
+import { useState } from 'react';
+import { Card } from '../../../../components/ui/card';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../../components/ui/input';
+import { Badge } from '../../../../components/ui/badge';
+import { formatarCPF, formatarDataHora, formatarData } from '../../../../lib/formatters';
 import { DataTable, Column } from '../../../components/shared/DataTable';
-import { Card } from '../../../components/ui/card';
 import { Label } from '../../../components/ui/label';
-import { Button } from '../../../components/ui/button';
-import { Badge } from '../../../components/ui/badge';
-import { Input } from '../../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '../../../components/ui/dialog';
 import { toast } from 'sonner';
@@ -285,10 +257,6 @@ export default function PontoPage() {
     toast.info('Funcionalidade em desenvolvimento');
   };
 
-  const formatCPF = (cpf: string) => {
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-  };
-
   // Colunas da tabela
   const columns: Column<RegistroPonto>[] = [
     {
@@ -298,7 +266,7 @@ export default function PontoPage() {
         <div>
           <p className="text-gray-900">{item.colaborador?.nome || '-'}</p>
           <p className="text-xs text-gray-500 font-mono">
-            {item.colaborador?.cpf ? formatCPF(item.colaborador.cpf) : ''}
+            {item.colaborador?.cpf ? formatarCPF(item.colaborador.cpf) : ''}
           </p>
         </div>
       ),
@@ -395,7 +363,7 @@ export default function PontoPage() {
               Controle de Ponto Eletrônico
             </h1>
             <p className="text-gray-600">
-              {empresa?.nome} • {formatDate(filterData)}
+              {empresa?.nome} • {formatarData(filterData)}
             </p>
             <Badge className="mt-2 bg-blue-100 text-blue-700">
               RN-004: Controle Centralizado

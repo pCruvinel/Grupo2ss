@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Plus, Edit, Building2, List, Grid, DollarSign, Users, Package } from 'lucide-react';
+import { Plus, Edit, Building2, CheckCircle2, XCircle, List, Grid, DollarSign, Users, Package } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
 import { Input } from './ui/input';
+import { Badge } from './ui/badge';
+import { Card } from './ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Label } from './ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 
 interface Empresa {
   id: string;

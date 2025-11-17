@@ -1,170 +1,311 @@
-import { z } from 'zod';
+/**
+ * Validadores - Sistema ERP Grupo 2S
+ * 
+ * Funções de validação para formulários e modais.
+ * Complementa /lib/formatters.ts com validações específicas.
+ */
 
-// Validações customizadas
-export const cpfSchema = z.string().regex(/^\d{11}$/, 'CPF inválido');
-export const cnpjSchema = z.string().regex(/^\d{14}$/, 'CNPJ inválido');
-export const telefoneSchema = z.string().regex(/^\d{10,11}$/, 'Telefone inválido');
-export const cepSchema = z.string().regex(/^\d{8}$/, 'CEP inválido');
+// Re-exportar validadores do formatters para centralização
+export { validarCPF, validarCNPJ, validarEmail } from './formatters';
 
-export const enderecoSchema = z.object({
-  cep: cepSchema,
-  logradouro: z.string().min(3),
-  numero: z.string().min(1),
-  complemento: z.string().optional(),
-  bairro: z.string().min(2),
-  cidade: z.string().min(2),
-  estado: z.string().length(2),
-});
+/**
+ * Valida CPF ou CNPJ automaticamente
+ * @param documento - String com CPF ou CNPJ
+ * @returns Boolean indicando se é válido
+ */
+export function validarCPFouCNPJ(documento: string): boolean {
+  const numeros = documento.replace(/\D/g, '');
+  
+  if (numeros.length === 11) {
+    // Importar validarCPF
+    const { validarCPF } = require('./formatters');
+    return validarCPF(documento);
+  } else if (numeros.length === 14) {
+    // Importar validarCNPJ
+    const { validarCNPJ } = require('./formatters');
+    return validarCNPJ(documento);
+  }
+  
+  return false;
+}
 
-export const dadosBancariosSchema = z.object({
-  banco: z.string().min(3),
-  agencia: z.string().min(3),
-  conta: z.string().min(4),
-  tipo_conta: z.enum(['corrente', 'poupanca']),
-  pix: z.string().optional(),
-});
+/**
+ * Valida força de senha
+ * @param senha - String com a senha
+ * @returns Objeto com validação e mensagens
+ */
+export function validarSenha(senha: string): { 
+  valida: boolean; 
+  forcaLabel: 'fraca' | 'media' | 'forte';
+  mensagens: string[];
+} {
+  const mensagens: string[] = [];
+  let pontos = 0;
+  
+  if (senha.length < 8) {
+    mensagens.push('Senha deve ter no mínimo 8 caracteres');
+  } else {
+    pontos++;
+  }
+  
+  if (!/[A-Z]/.test(senha)) {
+    mensagens.push('Deve conter pelo menos uma letra maiúscula');
+  } else {
+    pontos++;
+  }
+  
+  if (!/[a-z]/.test(senha)) {
+    mensagens.push('Deve conter pelo menos uma letra minúscula');
+  } else {
+    pontos++;
+  }
+  
+  if (!/[0-9]/.test(senha)) {
+    mensagens.push('Deve conter pelo menos um número');
+  } else {
+    pontos++;
+  }
+  
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(senha)) {
+    mensagens.push('Deve conter pelo menos um caractere especial');
+  } else {
+    pontos++;
+  }
+  
+  let forcaLabel: 'fraca' | 'media' | 'forte';
+  if (pontos <= 2) {
+    forcaLabel = 'fraca';
+  } else if (pontos <= 4) {
+    forcaLabel = 'media';
+  } else {
+    forcaLabel = 'forte';
+  }
+  
+  return {
+    valida: pontos >= 4,
+    forcaLabel,
+    mensagens,
+  };
+}
 
-// Schema de Login
-export const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
-});
+/**
+ * Valida se data é futura
+ * @param data - String ou Date
+ * @returns Boolean indicando se é futura
+ */
+export function validarDataFutura(data: string | Date): boolean {
+  const dataInput = new Date(data);
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  return dataInput > hoje;
+}
 
-// Schema de Cliente
-export const clienteSchema = z.object({
-  tipo: z.enum(['pessoa_fisica', 'pessoa_juridica']),
-  nome_razao_social: z.string().min(3, 'Nome/Razão Social obrigatório'),
-  nome_fantasia: z.string().optional(),
-  cpf_cnpj: z.string().min(11, 'CPF/CNPJ obrigatório'),
-  rg_ie: z.string().optional(),
-  email: z.string().email('Email inválido').optional().or(z.literal('')),
-  telefone: z.string().optional(),
-  whatsapp: z.string().optional(),
-  endereco_completo: enderecoSchema.optional(),
-  dados_bancarios: dadosBancariosSchema.optional(),
-  observacoes: z.string().optional(),
-  status: z.enum(['ativo', 'inativo', 'inadimplente']).default('ativo'),
-});
+/**
+ * Valida se data é passada
+ * @param data - String ou Date
+ * @returns Boolean indicando se é passada
+ */
+export function validarDataPassada(data: string | Date): boolean {
+  const dataInput = new Date(data);
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  
+  return dataInput < hoje;
+}
 
-// Schema de Fornecedor
-export const fornecedorSchema = z.object({
-  tipo: z.enum(['pessoa_fisica', 'pessoa_juridica']),
-  nome_razao_social: z.string().min(3, 'Nome/Razão Social obrigatório'),
-  cpf_cnpj: z.string().min(11, 'CPF/CNPJ obrigatório'),
-  categoria_servico: z.string().optional(),
-  email: z.string().email('Email inválido').optional().or(z.literal('')),
-  telefone: z.string().optional(),
-  endereco_completo: enderecoSchema.optional(),
-  dados_bancarios: dadosBancariosSchema.optional(),
-  status: z.enum(['ativo', 'inativo']).default('ativo'),
-});
+/**
+ * Valida se intervalo entre datas é maior que mínimo (em dias)
+ * @param dataInicio - Data de início
+ * @param dataFim - Data de fim
+ * @param diasMinimos - Número mínimo de dias
+ * @returns Boolean indicando se intervalo é válido
+ */
+export function validarIntervaloMinimo(
+  dataInicio: string | Date, 
+  dataFim: string | Date, 
+  diasMinimos: number
+): boolean {
+  const inicio = new Date(dataInicio);
+  const fim = new Date(dataFim);
+  
+  const diferencaMilissegundos = fim.getTime() - inicio.getTime();
+  const diferencaDias = diferencaMilissegundos / (1000 * 60 * 60 * 24);
+  
+  return diferencaDias >= diasMinimos;
+}
 
-// Schema de Contrato
-export const contratoSchema = z.object({
-  tipo: z.enum(['cliente', 'fornecedor']),
-  cliente_id: z.number().optional(),
-  fornecedor_id: z.number().optional(),
-  descricao: z.string().optional(),
-  valor_total: z.number().positive('Valor deve ser positivo'),
-  data_inicio: z.string(),
-  data_fim: z.string().optional(),
-  tipo_parcelamento: z.enum(['mensal', 'personalizado', 'vista']),
-  numero_parcelas: z.number().int().positive().optional(),
-  observacoes: z.string().optional(),
-  arquivo_pdf_url: z.string().optional(),
-});
+/**
+ * Verifica se data é dia útil (seg-sex, excluindo feriados nacionais fixos)
+ * @param data - String ou Date
+ * @returns Boolean indicando se é dia útil
+ */
+export function ehDiaUtil(data: string | Date): boolean {
+  const dataInput = new Date(data);
+  const diaSemana = dataInput.getDay();
+  
+  // Sábado (6) ou Domingo (0)
+  if (diaSemana === 0 || diaSemana === 6) {
+    return false;
+  }
+  
+  // Feriados nacionais fixos (formato: MM-DD)
+  const feriadosFixos = [
+    '01-01', // Ano Novo
+    '04-21', // Tiradentes
+    '05-01', // Dia do Trabalho
+    '09-07', // Independência
+    '10-12', // Nossa Senhora Aparecida
+    '11-02', // Finados
+    '11-15', // Proclamação da República
+    '12-25', // Natal
+  ];
+  
+  const mes = String(dataInput.getMonth() + 1).padStart(2, '0');
+  const dia = String(dataInput.getDate()).padStart(2, '0');
+  const dataFormatada = `${mes}-${dia}`;
+  
+  return !feriadosFixos.includes(dataFormatada);
+}
 
-// Schema de Colaborador
-export const colaboradorSchema = z.object({
-  nome: z.string().min(3, 'Nome obrigatório'),
-  cpf: cpfSchema,
-  rg: z.string().optional(),
-  data_nascimento: z.string(),
-  email: z.string().email('Email inválido').optional().or(z.literal('')),
-  telefone: z.string().optional(),
-  endereco_completo: enderecoSchema.optional(),
-  tipo_contrato: z.enum(['pj', 'clt']),
-  cargo_id: z.number().optional(),
-  salario_base: z.number().positive('Salário deve ser positivo'),
-  data_admissao: z.string(),
-  rateio_empresas: z.record(z.number()).optional(),
-  observacoes: z.string().optional(),
-});
+/**
+ * Valida número de telefone brasileiro (fixo ou celular)
+ * @param telefone - String com telefone
+ * @returns Boolean indicando se é válido
+ */
+export function validarTelefone(telefone: string): boolean {
+  const numeros = telefone.replace(/\D/g, '');
+  
+  // Telefone fixo: 10 dígitos (DDD + 8 dígitos)
+  // Celular: 11 dígitos (DDD + 9 dígitos)
+  if (numeros.length !== 10 && numeros.length !== 11) {
+    return false;
+  }
+  
+  // DDD válido (11 a 99)
+  const ddd = parseInt(numeros.substring(0, 2));
+  if (ddd < 11 || ddd > 99) {
+    return false;
+  }
+  
+  // Celular deve começar com 9
+  if (numeros.length === 11) {
+    const primeiroDigito = numeros.charAt(2);
+    if (primeiroDigito !== '9') {
+      return false;
+    }
+  }
+  
+  return true;
+}
 
-// Schema de Ponto
-export const pontoSchema = z.object({
-  colaborador_id: z.number(),
-  data: z.string(),
-  entrada_manha: z.string().optional(),
-  saida_almoco: z.string().optional(),
-  entrada_tarde: z.string().optional(),
-  saida_noite: z.string().optional(),
-  horas_contratadas: z.number().default(8),
-  observacoes: z.string().optional(),
-});
+/**
+ * Valida CEP brasileiro
+ * @param cep - String com CEP
+ * @returns Boolean indicando se é válido
+ */
+export function validarCEP(cep: string): boolean {
+  const numeros = cep.replace(/\D/g, '');
+  return numeros.length === 8 && /^\d{8}$/.test(numeros);
+}
 
-// Schema de Pagamento
-export const pagamentoSchema = z.object({
-  colaborador_id: z.number(),
-  mes_referencia: z.string(),
-  salario_base: z.number().positive(),
-  vale_transporte: z.number().default(0),
-  vale_alimentacao: z.number().default(0),
-  bonus: z.number().default(0),
-  outros_adicionais: z.number().default(0),
-  plano_saude: z.number().default(0),
-  adiantamentos: z.number().default(0),
-  outros_descontos: z.number().default(0),
-  observacoes: z.string().optional(),
-});
+/**
+ * Valida placa de veículo (Mercosul e antiga)
+ * @param placa - String com placa
+ * @returns Boolean indicando se é válida
+ */
+export function validarPlaca(placa: string): boolean {
+  const placaLimpa = placa.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  
+  // Placa Mercosul: ABC1D23
+  const regexMercosul = /^[A-Z]{3}[0-9][A-Z][0-9]{2}$/;
+  
+  // Placa antiga: ABC1234
+  const regexAntiga = /^[A-Z]{3}[0-9]{4}$/;
+  
+  return regexMercosul.test(placaLimpa) || regexAntiga.test(placaLimpa);
+}
 
-// Schema de Material
-export const materialSchema = z.object({
-  codigo: z.string().optional(),
-  nome: z.string().min(3, 'Nome obrigatório'),
-  categoria_id: z.number().optional(),
-  descricao: z.string().optional(),
-  unidade_medida: z.string().optional(),
-  estoque_atual: z.number().default(0),
-  estoque_minimo: z.number().optional(),
-  estoque_maximo: z.number().optional(),
-  valor_unitario: z.number().optional(),
-  localizacao: z.string().optional(),
-  status: z.enum(['ativo', 'inativo', 'manutencao']).default('ativo'),
-});
+/**
+ * Valida valor numérico maior que zero
+ * @param valor - Número ou string
+ * @returns Boolean indicando se é maior que zero
+ */
+export function validarValorPositivo(valor: number | string): boolean {
+  const num = typeof valor === 'string' ? parseFloat(valor) : valor;
+  return !isNaN(num) && num > 0;
+}
 
-// Schema de Ordem de Serviço
-export const ordemServicoSchema = z.object({
-  contrato_id: z.number().optional(),
-  cliente_id: z.number(),
-  descricao_evento: z.string().min(5, 'Descrição obrigatória'),
-  local_evento: z.string().optional(),
-  data_montagem: z.string().optional(),
-  data_desmontagem: z.string().optional(),
-  responsavel_evento: z.string().optional(),
-  veiculo_id: z.number().optional(),
-  motorista_id: z.number().optional(),
-  observacoes: z.string().optional(),
-});
+/**
+ * Valida valor numérico maior ou igual a zero
+ * @param valor - Número ou string
+ * @returns Boolean indicando se é >= 0
+ */
+export function validarValorNaoNegativo(valor: number | string): boolean {
+  const num = typeof valor === 'string' ? parseFloat(valor) : valor;
+  return !isNaN(num) && num >= 0;
+}
 
-// Schema de Veículo
-export const veiculoSchema = z.object({
-  placa: z.string().min(7, 'Placa obrigatória'),
-  modelo: z.string().optional(),
-  marca: z.string().optional(),
-  ano: z.number().int().optional(),
-  status: z.enum(['disponivel', 'em_uso', 'manutencao']).default('disponivel'),
-});
+/**
+ * Valida CNAE (Classificação Nacional de Atividades Econômicas)
+ * @param cnae - String com CNAE
+ * @returns Boolean indicando se formato é válido
+ */
+export function validarCNAE(cnae: string): boolean {
+  const numeros = cnae.replace(/\D/g, '');
+  return numeros.length === 7;
+}
 
-// Schema de Despesa
-export const despesaSchema = z.object({
-  descricao: z.string().min(3, 'Descrição obrigatória'),
-  categoria: z.enum(['fixa', 'variavel', 'folha_pagamento']),
-  valor: z.number().positive('Valor deve ser positivo'),
-  data_vencimento: z.string(),
-  data_pagamento: z.string().optional(),
-  forma_pagamento: z.string().optional(),
-  fornecedor_id: z.number().optional(),
-  rateio_empresas: z.record(z.number()).optional(),
-  observacoes: z.string().optional(),
-});
+/**
+ * Valida código de barras EAN-13
+ * @param codigo - String com código
+ * @returns Boolean indicando se é válido
+ */
+export function validarCodigoBarras(codigo: string): boolean {
+  const numeros = codigo.replace(/\D/g, '');
+  
+  if (numeros.length !== 13) return false;
+  
+  // Algoritmo de validação EAN-13
+  let soma = 0;
+  for (let i = 0; i < 12; i++) {
+    const digito = parseInt(numeros.charAt(i));
+    soma += i % 2 === 0 ? digito : digito * 3;
+  }
+  
+  const digitoVerificador = (10 - (soma % 10)) % 10;
+  return digitoVerificador === parseInt(numeros.charAt(12));
+}
+
+/**
+ * Valida horário no formato HH:MM
+ * @param horario - String com horário
+ * @returns Boolean indicando se é válido
+ */
+export function validarHorario(horario: string): boolean {
+  const regex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+  return regex.test(horario);
+}
+
+/**
+ * Valida se string não está vazia (após trim)
+ * @param texto - String a validar
+ * @returns Boolean indicando se não está vazia
+ */
+export function validarTextoObrigatorio(texto: string | undefined | null): boolean {
+  return !!texto && texto.trim().length > 0;
+}
+
+/**
+ * Valida URL
+ * @param url - String com URL
+ * @returns Boolean indicando se é válida
+ */
+export function validarURL(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}

@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Check, Trash2, Edit, Download, Mail, Archive, MoreHorizontal } from 'lucide-react';
+import { Trash2, Archive, ToggleLeft, MoreHorizontal, AlertCircle, Download } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Checkbox } from '../ui/checkbox';
-import { Badge } from '../ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
@@ -20,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../ui/alert-dialog';
-import { toast } from '../ui/sonner';
+import { toast } from 'sonner';
 
 export interface BulkAction {
   id: string;
@@ -153,6 +152,7 @@ export function BulkActions({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Ações adicionais</DropdownMenuLabel>
                     {actions.slice(3).map((action, index) => (
                       <div key={action.id}>
                         {index > 0 && action.variant === 'destructive' && (
@@ -245,38 +245,6 @@ export function BulkActionsExample() {
 
   const actions: BulkAction[] = [
     {
-      id: 'approve',
-      label: 'Aprovar',
-      icon: <Check className="w-4 h-4" />,
-      onExecute: async (ids) => {
-        console.log('Aprovando:', ids);
-      },
-    },
-    {
-      id: 'edit',
-      label: 'Editar',
-      icon: <Edit className="w-4 h-4" />,
-      onExecute: async (ids) => {
-        console.log('Editando:', ids);
-      },
-    },
-    {
-      id: 'export',
-      label: 'Exportar',
-      icon: <Download className="w-4 h-4" />,
-      onExecute: async (ids) => {
-        console.log('Exportando:', ids);
-      },
-    },
-    {
-      id: 'email',
-      label: 'Enviar E-mail',
-      icon: <Mail className="w-4 h-4" />,
-      onExecute: async (ids) => {
-        console.log('Enviando e-mail:', ids);
-      },
-    },
-    {
       id: 'archive',
       label: 'Arquivar',
       icon: <Archive className="w-4 h-4" />,
@@ -298,6 +266,14 @@ export function BulkActionsExample() {
         'Esta ação não pode ser desfeita. Os itens serão permanentemente excluídos.',
       onExecute: async (ids) => {
         console.log('Excluindo:', ids);
+      },
+    },
+    {
+      id: 'export',
+      label: 'Exportar',
+      icon: <Download className="w-4 h-4" />,
+      onExecute: async (ids) => {
+        console.log('Exportando:', ids);
       },
     },
   ];

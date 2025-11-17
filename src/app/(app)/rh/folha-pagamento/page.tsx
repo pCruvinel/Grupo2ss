@@ -8,20 +8,14 @@
  */
 
 import { useState, useEffect, useMemo } from 'react';
-import { Download, DollarSign, Users, Calendar, TrendingUp } from 'lucide-react';
-import { 
-  createClient, 
-  useEmpresa, 
-  LoadingSpinner, 
-  EmptyState,
-  formatCurrency,
-  formatDate 
-} from '../../../lib/figma-make-helpers';
-import { Card } from '../../../components/ui/card';
-import { Button } from '../../../components/ui/button';
-import { Badge } from '../../../components/ui/badge';
-import { Label } from '../../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
+import { Card } from '../../../../components/ui/card';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../../components/ui/input';
+import { Badge } from '../../../../components/ui/badge';
+import { formatarCPF, formatarMoeda, formatarData } from '../../../../lib/formatters';
+import { createClient, useEmpresa, LoadingSpinner, EmptyState } from '../../../lib/figma-make-helpers';
+import { Label } from '../../../../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { toast } from 'sonner';
 
 interface ItemFolha {
@@ -178,10 +172,6 @@ export default function FolhaPagamentoPage() {
     }
   };
 
-  const formatCPF = (cpf: string) => {
-    return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-  };
-
   // Colunas da tabela
   const columns: Column<ItemFolha>[] = [
     {
@@ -194,7 +184,7 @@ export default function FolhaPagamentoPage() {
       label: 'CPF',
       render: (_, item) => (
         <span className="font-mono text-sm">
-          {item.colaborador?.cpf ? formatCPF(item.colaborador.cpf) : '-'}
+          {item.colaborador?.cpf ? formatarCPF(item.colaborador.cpf) : '-'}
         </span>
       ),
     },
@@ -207,7 +197,7 @@ export default function FolhaPagamentoPage() {
       key: 'salario_base',
       label: 'Salário Base',
       render: (_, item) => (
-        <span className="font-mono">{formatCurrency(item.salario_base)}</span>
+        <span className="font-mono">{formatarMoeda(item.salario_base)}</span>
       ),
     },
     {
@@ -215,7 +205,7 @@ export default function FolhaPagamentoPage() {
       label: 'Bônus',
       render: (_, item) => (
         <span className="font-mono text-green-600">
-          +{formatCurrency(item.bonus)}
+          +{formatarMoeda(item.bonus)}
         </span>
       ),
     },
@@ -224,7 +214,7 @@ export default function FolhaPagamentoPage() {
       label: 'Descontos',
       render: (_, item) => (
         <span className="font-mono text-red-600">
-          -{formatCurrency(item.descontos)}
+          -{formatarMoeda(item.descontos)}
         </span>
       ),
     },
@@ -247,7 +237,7 @@ export default function FolhaPagamentoPage() {
       label: 'Valor Empresa',
       render: (_, item) => (
         <span className="font-mono text-blue-600">
-          {formatCurrency(calcularValorEmpresa(item))}
+          {formatarMoeda(calcularValorEmpresa(item))}
         </span>
       ),
     },
@@ -334,19 +324,19 @@ export default function FolhaPagamentoPage() {
           </Card>
           <Card className="p-4">
             <p className="text-sm text-gray-600 mb-1">Salário Base</p>
-            <p className="text-xl text-gray-900">{formatCurrency(stats.totalBruto)}</p>
+            <p className="text-xl text-gray-900">{formatarMoeda(stats.totalBruto)}</p>
           </Card>
           <Card className="p-4">
             <p className="text-sm text-gray-600 mb-1">Bônus</p>
-            <p className="text-xl text-green-600">+{formatCurrency(stats.totalBonus)}</p>
+            <p className="text-xl text-green-600">+{formatarMoeda(stats.totalBonus)}</p>
           </Card>
           <Card className="p-4">
             <p className="text-sm text-gray-600 mb-1">Descontos</p>
-            <p className="text-xl text-red-600">-{formatCurrency(stats.totalDescontos)}</p>
+            <p className="text-xl text-red-600">-{formatarMoeda(stats.totalDescontos)}</p>
           </Card>
           <Card className="p-4">
             <p className="text-sm text-gray-600 mb-1">Total Líquido</p>
-            <p className="text-xl text-blue-600">{formatCurrency(stats.totalLiquido)}</p>
+            <p className="text-xl text-blue-600">{formatarMoeda(stats.totalLiquido)}</p>
           </Card>
           <Card className="p-4">
             <div className="flex items-center gap-2 mb-1">
@@ -381,20 +371,20 @@ export default function FolhaPagamentoPage() {
           <div className="space-y-3">
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-gray-600">Total Salários Base</span>
-              <span className="font-mono">{formatCurrency(stats.totalBruto)}</span>
+              <span className="font-mono">{formatarMoeda(stats.totalBruto)}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-green-600">+ Total Bônus</span>
-              <span className="font-mono text-green-600">{formatCurrency(stats.totalBonus)}</span>
+              <span className="font-mono text-green-600">{formatarMoeda(stats.totalBonus)}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-red-600">- Total Descontos</span>
-              <span className="font-mono text-red-600">{formatCurrency(stats.totalDescontos)}</span>
+              <span className="font-mono text-red-600">{formatarMoeda(stats.totalDescontos)}</span>
             </div>
             <div className="flex justify-between items-center pt-3">
               <span className="font-medium text-gray-900">Total a Pagar (com rateio)</span>
               <span className="text-2xl font-mono text-blue-600">
-                {formatCurrency(stats.totalLiquido)}
+                {formatarMoeda(stats.totalLiquido)}
               </span>
             </div>
           </div>
@@ -487,7 +477,7 @@ export default function FolhaPagamentoPage() {
                 </h4>
                 <p className="text-xs text-gray-600">{selectedItem.colaborador?.cargo}</p>
                 <p className="text-lg text-gray-900 mt-2">
-                  Salário Líquido Total: {formatCurrency(selectedItem.salario_liquido)}
+                  Salário Líquido Total: {formatarMoeda(selectedItem.salario_liquido)}
                 </p>
               </div>
 
@@ -510,7 +500,7 @@ export default function FolhaPagamentoPage() {
                           <Badge variant="outline" className="text-xs">
                             {percentual.toFixed(1)}%
                           </Badge>
-                          <span className="text-sm text-gray-900">{formatCurrency(valor)}</span>
+                          <span className="text-sm text-gray-900">{formatarMoeda(valor)}</span>
                         </div>
                       </div>
                     );
@@ -520,7 +510,7 @@ export default function FolhaPagamentoPage() {
               <div className="flex justify-between items-center p-3 bg-orange-100 rounded border-2 border-orange-300">
                 <span className="text-sm text-gray-700">Total:</span>
                 <span className="text-lg text-gray-900">
-                  {formatCurrency(selectedItem.salario_liquido)}
+                  {formatarMoeda(selectedItem.salario_liquido)}
                 </span>
               </div>
             </div>

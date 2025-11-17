@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, FileText, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Download, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { toast } from '../ui/sonner';
+import { toast } from 'sonner';
 
 interface ExportButtonProps {
   data: any[];
@@ -96,7 +96,7 @@ export function ExportButton({
         await exportOrdensServico(data);
         break;
       default:
-        throw new Error('Tipo de exporta��ão não suportado');
+        throw new Error('Tipo de exportaão não suportado');
     }
 
     toast.success('Excel exportado com sucesso!', {

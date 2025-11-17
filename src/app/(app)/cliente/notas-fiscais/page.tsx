@@ -26,22 +26,13 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { LoadingSpinner } from '../../../../components/shared/LoadingSpinner';
 import { EmptyState } from '../../../../components/shared/EmptyState';
 import { Card } from '../../../../components/ui/card';
-import { Label } from '../../../../components/ui/label';
 import { Button } from '../../../../components/ui/button';
 import { Badge } from '../../../../components/ui/badge';
+import { formatarMoeda, formatarData } from '../../../../lib/formatters';
 import { Input } from '../../../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../../components/ui/dialog';
 import { toast } from 'sonner@2.0.3';
-
-// Inline utils
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('pt-BR');
-};
 
 // Mock Supabase Client
 const createClient = () => ({
@@ -309,7 +300,7 @@ export default function NotasFiscaisPage() {
               <DollarSign className="w-4 h-4 text-green-600" />
               <p className="text-sm text-gray-600">Valor Total</p>
             </div>
-            <p className="text-2xl text-green-600">{formatCurrency(stats.valorTotal)}</p>
+            <p className="text-2xl text-green-600">{formatarMoeda(stats.valorTotal)}</p>
           </Card>
         </div>
 
@@ -437,7 +428,7 @@ export default function NotasFiscaisPage() {
                       <p className="text-xs text-gray-500 mb-1">Data de Emissão</p>
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4 text-gray-400" />
-                        <p className="text-sm text-gray-900">{formatDate(nota.data_emissao)}</p>
+                        <p className="text-sm text-gray-900">{formatarData(nota.data_emissao)}</p>
                       </div>
                     </div>
 
@@ -447,7 +438,7 @@ export default function NotasFiscaisPage() {
                         <p className="text-xs text-gray-500 mb-1">Vencimento</p>
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-gray-400" />
-                          <p className="text-sm text-gray-900">{formatDate(nota.data_vencimento)}</p>
+                          <p className="text-sm text-gray-900">{formatarData(nota.data_vencimento)}</p>
                         </div>
                       </div>
                     )}
@@ -477,10 +468,10 @@ export default function NotasFiscaisPage() {
                 <div className="text-right ml-6">
                   <div className="mb-4">
                     <p className="text-xs text-gray-500 mb-1">Valor Total</p>
-                    <p className="text-3xl text-[#1F4788]">{formatCurrency(nota.valor_total)}</p>
+                    <p className="text-3xl text-[#1F4788]">{formatarMoeda(nota.valor_total)}</p>
                     {nota.valor_impostos && nota.valor_impostos > 0 && (
                       <p className="text-xs text-gray-500 mt-1">
-                        Impostos: {formatCurrency(nota.valor_impostos)}
+                        Impostos: {formatarMoeda(nota.valor_impostos)}
                       </p>
                     )}
                   </div>
@@ -553,7 +544,7 @@ export default function NotasFiscaisPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-600 mb-1">Valor Total</p>
-                    <p className="text-3xl text-[#1F4788]">{formatCurrency(notaSelecionada.valor_total)}</p>
+                    <p className="text-3xl text-[#1F4788]">{formatarMoeda(notaSelecionada.valor_total)}</p>
                   </div>
                 </div>
 
@@ -590,12 +581,12 @@ export default function NotasFiscaisPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Data de Emissão:</span>
-                      <span className="text-gray-900">{formatDate(notaSelecionada.data_emissao)}</span>
+                      <span className="text-gray-900">{formatarData(notaSelecionada.data_emissao)}</span>
                     </div>
                     {notaSelecionada.data_vencimento && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Data de Vencimento:</span>
-                        <span className="text-gray-900">{formatDate(notaSelecionada.data_vencimento)}</span>
+                        <span className="text-gray-900">{formatarData(notaSelecionada.data_vencimento)}</span>
                       </div>
                     )}
                   </div>
@@ -634,7 +625,7 @@ export default function NotasFiscaisPage() {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Valor Total:</span>
                       <span className="text-gray-900 font-mono">
-                        {formatCurrency(notaSelecionada.valor_total)}
+                        {formatarMoeda(notaSelecionada.valor_total)}
                       </span>
                     </div>
                     {notaSelecionada.valor_impostos && notaSelecionada.valor_impostos > 0 && (
@@ -642,13 +633,13 @@ export default function NotasFiscaisPage() {
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Impostos:</span>
                           <span className="text-red-600 font-mono">
-                            {formatCurrency(notaSelecionada.valor_impostos)}
+                            {formatarMoeda(notaSelecionada.valor_impostos)}
                           </span>
                         </div>
                         <div className="flex justify-between text-sm pt-2 border-t">
                           <span className="text-gray-600 font-medium">Valor Líquido:</span>
                           <span className="text-green-600 font-mono font-medium">
-                            {formatCurrency(notaSelecionada.valor_total - notaSelecionada.valor_impostos)}
+                            {formatarMoeda(notaSelecionada.valor_total - notaSelecionada.valor_impostos)}
                           </span>
                         </div>
                       </>

@@ -6,7 +6,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
+import { formatarMoeda } from '../lib/formatters';
 
 interface NovoMaterialModalProps {
   open: boolean;

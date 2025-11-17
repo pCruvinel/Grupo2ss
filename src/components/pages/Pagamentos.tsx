@@ -13,6 +13,7 @@ import { Badge } from '../ui/badge';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { formatarMoeda, formatarData } from '../../lib/formatters';
 import { 
   DollarSign, 
   Calendar, 
@@ -84,7 +85,7 @@ const MOCK_PAGAMENTOS = [
     status: 'pago',
     forma_pagamento: 'pix',
     empresa_id: '2',
-    observacoes: 'Bônus por projeto especial concluído'
+    observacoes: 'Bônus por projeto especial conclu��do'
   },
   {
     id: '4',
@@ -237,13 +238,6 @@ export default function Pagamentos() {
     toast.success('Pagamento registrado com sucesso!');
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(value);
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pago':
@@ -325,7 +319,7 @@ export default function Pagamentos() {
             <div>
               <p className="text-sm text-gray-600">Pagos</p>
               <p className="text-2xl text-gray-900">{stats.totalPagos}</p>
-              <p className="text-xs text-gray-500">{formatCurrency(stats.valorPago)}</p>
+              <p className="text-xs text-gray-500">{formatarMoeda(stats.valorPago)}</p>
             </div>
           </div>
         </Card>
@@ -338,7 +332,7 @@ export default function Pagamentos() {
             <div>
               <p className="text-sm text-gray-600">Pendentes</p>
               <p className="text-2xl text-gray-900">{stats.totalPendentes}</p>
-              <p className="text-xs text-gray-500">{formatCurrency(stats.valorPendente)}</p>
+              <p className="text-xs text-gray-500">{formatarMoeda(stats.valorPendente)}</p>
             </div>
           </div>
         </Card>
@@ -350,7 +344,7 @@ export default function Pagamentos() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Total Pago</p>
-              <p className="text-xl text-gray-900">{formatCurrency(stats.valorPago)}</p>
+              <p className="text-xl text-gray-900">{formatarMoeda(stats.valorPago)}</p>
             </div>
           </div>
         </Card>
@@ -363,7 +357,7 @@ export default function Pagamentos() {
             <div>
               <p className="text-sm text-gray-600">Total Geral</p>
               <p className="text-xl text-gray-900">
-                {formatCurrency(stats.valorPago + stats.valorPendente)}
+                {formatarMoeda(stats.valorPago + stats.valorPendente)}
               </p>
             </div>
           </div>
@@ -461,19 +455,19 @@ export default function Pagamentos() {
                     </div>
                   </TableCell>
                   <TableCell>{getTipoBadge(pagamento.tipo)}</TableCell>
-                  <TableCell className="font-mono">{formatCurrency(pagamento.valor_base)}</TableCell>
+                  <TableCell className="font-mono">{formatarMoeda(pagamento.valor_base)}</TableCell>
                   <TableCell className="font-mono text-green-600">
-                    {pagamento.bonus > 0 ? `+${formatCurrency(pagamento.bonus)}` : '-'}
+                    {pagamento.bonus > 0 ? `+${formatarMoeda(pagamento.bonus)}` : '-'}
                   </TableCell>
                   <TableCell className="font-mono text-red-600">
-                    {pagamento.descontos > 0 ? `-${formatCurrency(pagamento.descontos)}` : '-'}
+                    {pagamento.descontos > 0 ? `-${formatarMoeda(pagamento.descontos)}` : '-'}
                   </TableCell>
                   <TableCell className="font-mono font-semibold">
-                    {formatCurrency(pagamento.valor_liquido)}
+                    {formatarMoeda(pagamento.valor_liquido)}
                   </TableCell>
                   <TableCell>
                     {pagamento.data_pagamento 
-                      ? new Date(pagamento.data_pagamento).toLocaleDateString('pt-BR')
+                      ? formatarData(pagamento.data_pagamento)
                       : '-'
                     }
                   </TableCell>
@@ -507,13 +501,13 @@ export default function Pagamentos() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Valor Base:</span>
-                  <span className="font-mono">{formatCurrency(pagamento.valor_base)}</span>
+                  <span className="font-mono">{formatarMoeda(pagamento.valor_base)}</span>
                 </div>
                 {pagamento.bonus > 0 && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Bônus:</span>
                     <span className="font-mono text-green-600">
-                      +{formatCurrency(pagamento.bonus)}
+                      +{formatarMoeda(pagamento.bonus)}
                     </span>
                   </div>
                 )}
@@ -521,7 +515,7 @@ export default function Pagamentos() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Descontos:</span>
                     <span className="font-mono text-red-600">
-                      -{formatCurrency(pagamento.descontos)}
+                      -{formatarMoeda(pagamento.descontos)}
                     </span>
                   </div>
                 )}
@@ -531,7 +525,7 @@ export default function Pagamentos() {
                 <div>
                   <p className="text-xs text-gray-500">Valor Líquido</p>
                   <p className="font-semibold text-gray-900">
-                    {formatCurrency(pagamento.valor_liquido)}
+                    {formatarMoeda(pagamento.valor_liquido)}
                   </p>
                 </div>
                 <Button variant="ghost" size="sm">

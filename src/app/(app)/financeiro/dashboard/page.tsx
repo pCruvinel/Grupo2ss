@@ -20,8 +20,10 @@ import {
   Clock,
   XCircle,
 } from 'lucide-react';
-import { Card } from '../../../components/ui/card';
-import { Badge } from '../../../components/ui/badge';
+import { Card } from '../../../../components/ui/card';
+import { Button } from '../../../../components/ui/button';
+import { Badge } from '../../../../components/ui/badge';
+import { formatarMoeda, formatarData } from '../../../../lib/formatters';
 import {
   BarChart,
   Bar,
@@ -260,7 +262,7 @@ export default function FinanceiroDashboardPage() {
             <TrendingUp className="w-5 h-5 text-green-600" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Receita Total</p>
-          <p className="text-2xl text-gray-900">{formatCurrency(stats.receitaTotal)}</p>
+          <p className="text-2xl text-gray-900">{formatarMoeda(stats.receitaTotal)}</p>
           <p className="text-xs text-green-600 mt-2">
             {stats.contratosAtivos} contrato(s) ativo(s)
           </p>
@@ -273,13 +275,13 @@ export default function FinanceiroDashboardPage() {
             </div>
           </div>
           <p className="text-sm text-gray-600 mb-1">Despesas</p>
-          <p className="text-2xl text-gray-900">{formatCurrency(stats.despesaTotal)}</p>
+          <p className="text-2xl text-gray-900">{formatarMoeda(stats.despesaTotal)}</p>
           <div className="flex gap-2 mt-2">
             <Badge className="text-xs bg-blue-100 text-blue-700">
-              Fixa: {formatCurrency(stats.despesaFixa)}
+              Fixa: {formatarMoeda(stats.despesaFixa)}
             </Badge>
             <Badge className="text-xs bg-purple-100 text-purple-700">
-              Var: {formatCurrency(stats.despesaVariavel)}
+              Var: {formatarMoeda(stats.despesaVariavel)}
             </Badge>
           </div>
         </Card>
@@ -296,7 +298,7 @@ export default function FinanceiroDashboardPage() {
               stats.lucro >= 0 ? 'text-green-600' : 'text-red-600'
             }`}
           >
-            {formatCurrency(stats.lucro)}
+            {formatarMoeda(stats.lucro)}
           </p>
           <p className="text-xs text-gray-600 mt-2">
             {stats.margemLucro.toFixed(1)}% margem
@@ -310,9 +312,9 @@ export default function FinanceiroDashboardPage() {
             </div>
           </div>
           <p className="text-sm text-gray-600 mb-1">A Receber</p>
-          <p className="text-2xl text-orange-600">{formatCurrency(stats.receitaPendente)}</p>
+          <p className="text-2xl text-orange-600">{formatarMoeda(stats.receitaPendente)}</p>
           <p className="text-xs text-gray-600 mt-2">
-            Recebido: {formatCurrency(stats.receitaPaga)}
+            Recebido: {formatarMoeda(stats.receitaPaga)}
           </p>
         </Card>
       </div>
@@ -361,7 +363,7 @@ export default function FinanceiroDashboardPage() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={(entry) => `${entry.name}: ${formatCurrency(entry.value)}`}
+                  label={(entry) => `${entry.name}: ${formatarMoeda(entry.value)}`}
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
@@ -370,7 +372,7 @@ export default function FinanceiroDashboardPage() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: any) => formatCurrency(value as number)} />
+                <Tooltip formatter={(value: any) => formatarMoeda(value as number)} />
               </PieChart>
             </ResponsiveContainer>
           ) : (
@@ -391,16 +393,16 @@ export default function FinanceiroDashboardPage() {
           <div className="space-y-3">
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-sm text-gray-600">Total</span>
-              <span className="font-mono text-gray-900">{formatCurrency(stats.receitaTotal)}</span>
+              <span className="font-mono text-gray-900">{formatarMoeda(stats.receitaTotal)}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-sm text-green-600">Pago</span>
-              <span className="font-mono text-green-600">{formatCurrency(stats.receitaPaga)}</span>
+              <span className="font-mono text-green-600">{formatarMoeda(stats.receitaPaga)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-orange-600">Pendente</span>
               <span className="font-mono text-orange-600">
-                {formatCurrency(stats.receitaPendente)}
+                {formatarMoeda(stats.receitaPendente)}
               </span>
             </div>
           </div>
@@ -414,16 +416,16 @@ export default function FinanceiroDashboardPage() {
           <div className="space-y-3">
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-sm text-gray-600">Total</span>
-              <span className="font-mono text-gray-900">{formatCurrency(stats.despesaTotal)}</span>
+              <span className="font-mono text-gray-900">{formatarMoeda(stats.despesaTotal)}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
               <span className="text-sm text-blue-600">Fixas</span>
-              <span className="font-mono text-blue-600">{formatCurrency(stats.despesaFixa)}</span>
+              <span className="font-mono text-blue-600">{formatarMoeda(stats.despesaFixa)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-purple-600">Variáveis</span>
               <span className="font-mono text-purple-600">
-                {formatCurrency(stats.despesaVariavel)}
+                {formatarMoeda(stats.despesaVariavel)}
               </span>
             </div>
           </div>
@@ -442,7 +444,7 @@ export default function FinanceiroDashboardPage() {
                   stats.lucro >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}
               >
-                {formatCurrency(stats.lucro)}
+                {formatarMoeda(stats.lucro)}
               </span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b">
@@ -480,7 +482,7 @@ export default function FinanceiroDashboardPage() {
               <div key={desp.id} className="p-3 bg-orange-50 rounded-lg mb-2">
                 <p className="text-sm text-gray-900">{desp.descricao}</p>
                 <p className="text-xs text-orange-600">
-                  Sua parte: {formatCurrency(desp.valores_rateados?.[empresa?.id || ''] || 0)} (
+                  Sua parte: {formatarMoeda(desp.valores_rateados?.[empresa?.id || ''] || 0)} (
                   {desp.rateio?.[empresa?.id || ''] || 0}%)
                 </p>
               </div>
@@ -537,11 +539,3 @@ const useEmpresa = () => ({
 
 // Mock LoadingSpinner
 const LoadingSpinner = () => <div className="flex items-center justify-center p-8">Carregando...</div>;
-
-// Mock formatCurrency
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-  }).format(value);
-};

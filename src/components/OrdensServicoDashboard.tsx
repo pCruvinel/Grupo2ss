@@ -5,7 +5,7 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 import { NovaOrdemServicoModal } from './NovaOrdemServicoModal';
 import { Pagination } from './shared/Pagination';
 import { ExportButton } from './shared/ExportButton';

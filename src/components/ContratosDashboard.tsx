@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { Plus, Eye, Edit, Check, X, FileText, List, Grid } from 'lucide-react';
+import { Plus, Edit, Eye, Trash2, FileText, Calendar, DollarSign, CheckCircle, XCircle, Clock, AlertCircle, List, Grid, Check, X } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { Badge } from './ui/badge';
+import { Card } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { toast } from './ui/sonner';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
+import { Label } from './ui/label';
+import { toast } from 'sonner';
 import { NovoContratoModal } from './NovoContratoModal';
-import { Pagination } from './shared/Pagination';
 import { ExportButton } from './shared/ExportButton';
+import { Pagination } from './shared/Pagination';
 
 interface Contrato {
   id: string;

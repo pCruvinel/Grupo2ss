@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Plus, Edit, Search, List, Grid, Lock, Package } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Edit, Search, List, Grid, Package, AlertTriangle, Lock } from 'lucide-react';
 import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { Badge } from './ui/badge';
+import { Card } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from './ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
-import { toast } from './ui/sonner';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
+import { Label } from './ui/label';
+import { toast } from 'sonner';
 import { NovoMaterialModal } from './NovoMaterialModal';
 import { Pagination } from './shared/Pagination';
-import { ExportButton } from './shared/ExportButton';
 
 interface Material {
   id: string;

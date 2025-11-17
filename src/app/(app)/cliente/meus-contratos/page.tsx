@@ -27,7 +27,6 @@ import { useAuth } from '../../../../hooks/useAuth';
 import { LoadingSpinner } from '../../../../components/shared/LoadingSpinner';
 import { EmptyState } from '../../../../components/shared/EmptyState';
 import { Card } from '../../../../components/ui/card';
-import { Label } from '../../../../components/ui/label';
 import { Button } from '../../../../components/ui/button';
 import { Badge } from '../../../../components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../../../../components/ui/dialog';
@@ -36,13 +35,7 @@ import { Progress } from '../../../../components/ui/progress';
 import { toast } from 'sonner@2.0.3';
 
 // Inline utils
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('pt-BR');
-};
+import { formatarMoeda, formatarData } from '../../../../lib/formatters';
 
 interface Contrato {
   id: string;
@@ -264,7 +257,7 @@ export default function MeusContratosPage() {
               <DollarSign className="w-4 h-4 text-green-600" />
               <p className="text-sm text-gray-600">Valor Total</p>
             </div>
-            <p className="text-2xl text-green-600">{formatCurrency(stats.valorTotal)}</p>
+            <p className="text-2xl text-green-600">{formatarMoeda(stats.valorTotal)}</p>
           </Card>
           <Card className="p-4">
             <p className="text-xs text-yellow-600 mb-1">Pendentes</p>
@@ -321,7 +314,7 @@ export default function MeusContratosPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl text-[#1F4788]">{formatCurrency(contrato.valor_total)}</p>
+                    <p className="text-2xl text-[#1F4788]">{formatarMoeda(contrato.valor_total)}</p>
                     <p className="text-xs text-gray-500">{contrato.num_parcelas}x parcelas</p>
                   </div>
                 </div>
@@ -340,12 +333,12 @@ export default function MeusContratosPage() {
                 <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                   <div>
                     <p className="text-gray-600">Data Início:</p>
-                    <p className="text-gray-900">{formatDate(contrato.data_inicio)}</p>
+                    <p className="text-gray-900">{formatarData(contrato.data_inicio)}</p>
                   </div>
                   {contrato.data_fim && (
                     <div>
                       <p className="text-gray-600">Data Fim:</p>
-                      <p className="text-gray-900">{formatDate(contrato.data_fim)}</p>
+                      <p className="text-gray-900">{formatarData(contrato.data_fim)}</p>
                     </div>
                   )}
                 </div>
@@ -377,8 +370,8 @@ export default function MeusContratosPage() {
                           Parcela {parcela.numero_parcela}/{contrato.num_parcelas}
                         </span>
                         <div className="text-right">
-                          <p className="text-yellow-900">{formatCurrency(parcela.valor)}</p>
-                          <p className="text-xs text-yellow-600">Venc: {formatDate(parcela.data_vencimento)}</p>
+                          <p className="text-yellow-900">{formatarMoeda(parcela.valor)}</p>
+                          <p className="text-xs text-yellow-600">Venc: {formatarData(parcela.data_vencimento)}</p>
                         </div>
                       </div>
                     ))}
@@ -438,7 +431,7 @@ export default function MeusContratosPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-3xl text-[#1F4788]">{formatCurrency(contratoSelecionado.valor_total)}</p>
+                    <p className="text-3xl text-[#1F4788]">{formatarMoeda(contratoSelecionado.valor_total)}</p>
                     <p className="text-sm text-gray-600">{contratoSelecionado.num_parcelas}x parcelas</p>
                   </div>
                 </div>
@@ -448,7 +441,7 @@ export default function MeusContratosPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Valor de Entrada:</span>
                       <span className="text-green-600 font-mono">
-                        {formatCurrency(contratoSelecionado.valor_entrada)}
+                        {formatarMoeda(contratoSelecionado.valor_entrada)}
                       </span>
                     </div>
                   </div>
@@ -466,17 +459,17 @@ export default function MeusContratosPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Data de Início:</span>
-                      <span className="text-gray-900">{formatDate(contratoSelecionado.data_inicio)}</span>
+                      <span className="text-gray-900">{formatarData(contratoSelecionado.data_inicio)}</span>
                     </div>
                     {contratoSelecionado.data_fim && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Data de Término:</span>
-                        <span className="text-gray-900">{formatDate(contratoSelecionado.data_fim)}</span>
+                        <span className="text-gray-900">{formatarData(contratoSelecionado.data_fim)}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
                       <span className="text-gray-600">Data de Criação:</span>
-                      <span className="text-gray-900">{formatDate(contratoSelecionado.data_criacao)}</span>
+                      <span className="text-gray-900">{formatarData(contratoSelecionado.data_criacao)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Número de Parcelas:</span>
@@ -485,7 +478,7 @@ export default function MeusContratosPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Valor por Parcela:</span>
                       <span className="text-gray-900 font-mono">
-                        {formatCurrency(contratoSelecionado.valor_total / contratoSelecionado.num_parcelas)}
+                        {formatarMoeda(contratoSelecionado.valor_total / contratoSelecionado.num_parcelas)}
                       </span>
                     </div>
                   </div>
@@ -584,17 +577,17 @@ export default function MeusContratosPage() {
                           Parcela {parcela.numero_parcela}/{contratoSelecionado?.num_parcelas}
                         </p>
                         <p className="text-sm text-gray-600">
-                          Vencimento: {formatDate(parcela.data_vencimento)}
+                          Vencimento: {formatarData(parcela.data_vencimento)}
                         </p>
                         {parcela.data_pagamento && (
                           <p className="text-sm text-green-600">
-                            Pago em: {formatDate(parcela.data_pagamento)}
+                            Pago em: {formatarData(parcela.data_pagamento)}
                           </p>
                         )}
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-mono text-gray-900">{formatCurrency(parcela.valor)}</p>
+                      <p className="text-xl font-mono text-gray-900">{formatarMoeda(parcela.valor)}</p>
                       {getStatusBadge(parcela.status)}
                     </div>
                   </div>

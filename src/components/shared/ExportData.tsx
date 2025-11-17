@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { toast } from '../ui/sonner';
+import { toast } from 'sonner';
 
 export type ExportFormat = 'excel' | 'csv' | 'pdf';
 

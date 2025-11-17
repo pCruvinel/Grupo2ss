@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, AlertTriangle, Lock, Unlock } from 'lucide-react';
+import { Package, Lock } from 'lucide-react';
 import { TwoColumnModal } from './TwoColumnModal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -7,7 +7,7 @@ import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Badge } from './ui/badge';
 import { Alert, AlertDescription } from './ui/alert';
-import { toast } from './ui/sonner';
+import { toast } from 'sonner';
 
 interface Material {
   id: string;
